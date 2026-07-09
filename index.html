@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gagan C — Physics &amp; Machine Learning</title>
+  <meta name="description" content="Gagan C — Integrated MSc Physics (Honours & Research), BIT Mesra. Operator learning, physics-informed neural networks, and interpretability." />
+
+  <!-- ==========================================================================
+       This is a single, self-contained file. No build step, no dependencies.
+       To edit content, search for the section comments (ABOUT, PROJECTS, etc.).
+       To deploy: push to a GitHub repo and enable Pages, or drag onto Netlify.
+       ========================================================================== -->
+
+  <style>
+    /* ---------- Theme tokens ---------- */
+    :root{
+      --bg:#fbfbf9;
+      --surface:#ffffff;
+      --text:#181818;
+      --muted:#5f5f5f;
+      --faint:#8a8a8a;
+      --line:#e6e4de;
+      --accent:#2f5aa8;         /* muted science-blue */
+      --accent-soft:#eef2fa;
+      --tag-bg:#f2f1ec;
+      --tag-text:#454545;
+      --lock-bg:#f6eee2;
+      --lock-text:#8a5a1f;
+      --shadow:0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+      --serif:"Charter","Georgia","Cambria","Times New Roman",serif;
+      --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      --mono:"SFMono-Regular","Cascadia Code","Consolas","Liberation Mono",monospace;
+      --maxw:820px;
+    }
+    :root[data-theme="dark"]{
+      --bg:#0f1113;
+      --surface:#16191c;
+      --text:#e9e8e4;
+      --muted:#a9a8a2;
+      --faint:#787772;
+      --line:#282c30;
+      --accent:#7ea6e6;
+      --accent-soft:#182130;
+      --tag-bg:#20242a;
+      --tag-text:#c4c3bd;
+      --lock-bg:#2a2213;
+      --lock-text:#d6b579;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+    @media (prefers-color-scheme:dark){
+      :root:not([data-theme="light"]){
+        --bg:#0f1113;--surface:#16191c;--text:#e9e8e4;--muted:#a9a8a2;--faint:#787772;
+        --line:#282c30;--accent:#7ea6e6;--accent-soft:#182130;--tag-bg:#20242a;--tag-text:#c4c3bd;
+        --lock-bg:#2a2213;--lock-text:#d6b579;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+      }
+    }
+
+    /* ---------- Base ---------- */
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:var(--sans);font-size:17px;line-height:1.65;
+      -webkit-font-smoothing:antialiased;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+    /* ---------- Nav ---------- */
+    nav{
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:saturate(1.2) blur(8px);
+      background:color-mix(in srgb,var(--bg) 82%,transparent);
+      border-bottom:1px solid var(--line);
+    }
+    nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+    nav .brand{font-family:var(--serif);font-weight:600;font-size:18px;letter-spacing:.2px}
+    nav .links{display:flex;gap:22px;align-items:center}
+    nav .links a{color:var(--muted);font-size:14px}
+    nav .links a:hover{color:var(--text);text-decoration:none}
+    .theme-btn{
+      background:none;border:1px solid var(--line);border-radius:8px;
+      width:34px;height:34px;cursor:pointer;color:var(--muted);font-size:15px;line-height:1;
+      display:inline-flex;align-items:center;justify-content:center;
+    }
+    .theme-btn:hover{color:var(--text);border-color:var(--muted)}
+    @media(max-width:640px){nav .links a.nav-sec{display:none}}
+
+    /* ---------- Section scaffolding ---------- */
+    section{padding:64px 0 8px}
+    .seclabel{
+      font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--faint);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+    }
+    .seclabel::after{content:"";flex:1;height:1px;background:var(--line)}
+    h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.2;letter-spacing:-.01em}
+    h2{font-size:26px;margin:0 0 20px}
+    p{color:var(--text)}
+    .muted{color:var(--muted)}
+
+    /* ---------- Hero ---------- */
+    header.hero{padding:76px 0 40px}
+    .hero h1{font-size:clamp(38px,7vw,58px);margin:0 0 6px}
+    .hero .role{font-size:19px;color:var(--muted);margin:0 0 22px;font-family:var(--sans)}
+    .hero .lede{font-size:19px;max-width:64ch;margin:0 0 28px}
+    .hero .lede b{font-weight:600}
+    .cta{display:flex;flex-wrap:wrap;gap:12px}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:9px 16px;border-radius:10px;font-size:14.5px;font-weight:500;
+      border:1px solid var(--line);background:var(--surface);color:var(--text);
+      transition:border-color .15s,transform .05s;
+    }
+    .btn:hover{text-decoration:none;border-color:var(--muted);transform:translateY(-1px)}
+    .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    .btn.primary:hover{filter:brightness(1.05)}
+
+    /* ---------- About ---------- */
+    .about p{font-size:18px;max-width:66ch}
+    .about p+p{margin-top:16px}
+
+    /* ---------- Skills ---------- */
+    .skills{display:grid;gap:2px}
+    .skillrow{display:grid;grid-template-columns:190px 1fr;gap:16px;padding:12px 0;border-top:1px solid var(--line)}
+    .skillrow:last-child{border-bottom:1px solid var(--line)}
+    .skillrow .k{font-weight:600;font-size:15px}
+    .skillrow .v{color:var(--muted);font-size:15.5px}
+    @media(max-width:640px){.skillrow{grid-template-columns:1fr;gap:2px}.skillrow .k{color:var(--accent)}}
+
+    /* ---------- Projects ---------- */
+    .card{
+      background:var(--surface);border:1px solid var(--line);border-radius:14px;
+      padding:22px 24px;margin-bottom:16px;box-shadow:var(--shadow);
+    }
+    .card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .card h3{font-size:20px;margin:0 0 4px}
+    .card .meta{font-size:13.5px;color:var(--faint);font-family:var(--mono)}
+    .card p{font-size:16px;color:var(--muted);margin:12px 0 14px}
+    .badge{
+      font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;
+      padding:5px 10px;border-radius:999px;white-space:nowrap;
+      background:var(--lock-bg);color:var(--lock-text);
+    }
+    .badge.open{background:var(--accent-soft);color:var(--accent)}
+    .badge.todo{background:var(--tag-bg);color:var(--tag-text)}
+    .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+    .tag{font-family:var(--mono);font-size:12px;background:var(--tag-bg);color:var(--tag-text);padding:4px 9px;border-radius:6px}
+    .card .cardlinks{display:flex;gap:16px;margin-top:12px;font-size:14px}
+
+    /* ---------- Featured (RLS) ---------- */
+    .featured{
+      background:linear-gradient(180deg,var(--accent-soft),var(--surface));
+      border:1px solid var(--line);border-left:3px solid var(--accent);
+      border-radius:14px;padding:26px 26px 24px;margin-bottom:18px;box-shadow:var(--shadow);
+    }
+    .featured .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+    .featured h3{font-size:25px;margin:0 0 6px}
+    .featured .tagline{font-size:17.5px;color:var(--muted);margin:0 0 14px;max-width:66ch}
+    .featured p{font-size:16px;color:var(--text);margin:12px 0}
+    .featured p.small{font-size:14.5px;color:var(--muted);margin:10px 0}
+    .outs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+    .out{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+    .out .n{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--accent);margin-bottom:6px}
+    .out .h{font-weight:600;font-size:15px;margin-bottom:5px}
+    .out .d{font-size:13px;color:var(--muted);line-height:1.5}
+    @media(max-width:640px){.outs{grid-template-columns:1fr}}
+    .callout{background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-top:18px}
+    .callout .h{font-weight:600;color:var(--accent);margin-bottom:6px;font-size:15px}
+    .callout p{font-size:15px;color:var(--text);margin:0}
+
+    /* ---------- Publication / lists ---------- */
+    .pub{border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:0}
+    .pub .title{font-weight:600}
+    .pub .venue{color:var(--muted);font-size:15px}
+    .edu .top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .edu h3{font-size:19px;margin:0}
+    .edu .when{font-family:var(--mono);font-size:13px;color:var(--faint)}
+    .bullets{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:15.5px}
+    .bullets li{margin:4px 0}
+
+    /* ---------- Footer ---------- */
+    footer{margin-top:56px;border-top:1px solid var(--line);padding:34px 0 60px}
+    footer .row{display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between}
+    footer a{color:var(--muted)}
+    footer a:hover{color:var(--text)}
+    .foot-links{display:flex;gap:20px;flex-wrap:wrap}
+    .copy{color:var(--faint);font-size:13.5px;font-family:var(--mono)}
+  </style>
+</head>
+<body>
+
+  <!-- ============================= NAV ============================= -->
+  <nav>
+    <div class="wrap">
+      <span class="brand">Gagan&nbsp;C</span>
+      <span class="links">
+        <a class="nav-sec" href="#about">About</a>
+        <a class="nav-sec" href="#research">Research</a>
+        <a class="nav-sec" href="#projects">Projects</a>
+        <a class="nav-sec" href="#contact">Contact</a>
+        <button class="theme-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark">◐</button>
+      </span>
+    </div>
+  </nav>
+
+  <!-- ============================= HERO ============================= -->
+  <header class="hero">
+    <div class="wrap">
+      <h1>Gagan&nbsp;C</h1>
+      <p class="role">Physics &amp; Machine Learning · Integrated MSc (Honours &amp; Research), BIT Mesra</p>
+      <!-- EDIT: this lede is your one-line pitch. Tweak spots are easy to tune. -->
+      <p class="lede">
+        I build <b>neural-operator</b> and <b>physics-informed</b> models for forward and
+        inverse problems — learning solution maps for parametric PDEs, recovering latent
+        parameters, and probing what a model has and hasn't actually learned.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="mailto:gaganc3773@gmail.com">Email</a>
+        <a class="btn" href="https://github.com/gaganc3773" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/gagan-c-3ab75124b" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================= ABOUT ============================= -->
+  <section id="about" class="about">
+    <div class="wrap">
+      <div class="seclabel">01 — About</div>
+      <!-- EDIT: A DRAFT. Make it yours — a calm statement of your interests, not a pitch. -->
+      <p>
+        I'm a physics researcher working at the intersection of scientific computing and
+        deep learning. My research centers on <b>operator learning</b> (Fourier Neural
+        Operators / PINO) and <b>physics-informed neural networks</b> for forward and inverse
+        PDE problems, most recently at IISc Bangalore.
+      </p>
+      <p>
+        A thread running through these projects is a single question — what has a model actually
+        learned, and what is it still missing? It's what led me to build the
+        <b>Residual Learnability Score</b>, a calibrated test for whether a trained model still
+        leaves recoverable structure in its residuals, and it's why I'm drawn to
+        <b>interpretability</b>: understanding not just how well a model performs, but what it has
+        and hasn't captured.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= RESEARCH ============================= -->
+  <section id="research">
+    <div class="wrap">
+      <div class="seclabel">02 — Research</div>
+
+      <!-- ===== FEATURED: Residual Learnability Score (RLS) ===== -->
+      <div class="featured">
+        <div class="eyebrow">◆ Featured · Interpretability</div>
+        <h3>Residual Learnability Score (RLS)</h3>
+        <p class="tagline">
+          A calibrated, interpretable test for a question a loss value can't answer: has a model
+          captured all the learnable signal — or is it still leaving structure on the table?
+        </p>
+
+        <p>
+          Validation loss tells you how <i>wrong</i> a model is, not whether it is as
+          <i>right as it can be</i>. Two models with identical held-out error can be in completely
+          different situations — one has extracted all the learnable signal and leaves only
+          irreducible noise; the other is systematically missing a periodicity, an interaction, or a
+          region of input space. An adequate model leaves residuals that behave like white noise; a
+          deficient one leaves residuals that are still predictable. RLS makes that concrete: it
+          measures the fraction of the residual field's variance a detector can recover
+          out-of-sample — a <b>detector-relative</b> quantity that ties the score directly to the
+          theory of usable (<i>V</i>-)information.
+        </p>
+
+        <div class="outs">
+          <div class="out">
+            <div class="n">01 · VERDICT</div>
+            <div class="h">Calibrated p-value</div>
+            <div class="d">A permutation null (shuffled residuals) rebuilds the "no-structure" distribution. A detector that hallucinates structure hallucinates equally on shuffles, so its overfitting bias cancels — the test stays calibrated even with an arbitrarily powerful detector.</div>
+          </div>
+          <div class="out">
+            <div class="n">02 · FINGERPRINT</div>
+            <div class="h">What was missed</div>
+            <div class="d">A Fourier Neural Operator detector fits residuals in the frequency domain, so the statistic doubles as a description of the missed structure — its scale, orientation, and complexity (or, for tabular models, the responsible features).</div>
+          </div>
+          <div class="out">
+            <div class="n">03 · RECOVERABILITY</div>
+            <div class="h">Proven effect size</div>
+            <div class="d">Build the correction the fingerprint implies and measure the held-out error drop. Theory predicts it equals the RLS fraction; when out-of-sample reduction matches the in-sample score, the missed structure is proven real.</div>
+          </div>
+        </div>
+
+        <p class="small">
+          <b>One-sided by design.</b> A significant score certifies a model is <i>improvable</i>; a
+          null result certifies nothing — it may mean the model is adequate, or that the detector was
+          too weak. Reporting the detector alongside the score is non-negotiable, and cross-fitting
+          makes memorized noise score zero.
+        </p>
+        <p class="small">
+          <b>Validated</b> through six pre-registered studies: near-perfect noise/signal separation
+          (ROC-AUC 0.998) at the nominal false-positive rate; in-sample score predicting held-out
+          error reduction almost one-to-one (R² 0.97–0.99, including 1-D Burgers PDE residual fields
+          with the FNO detector on GPU); exact recovery of injected scale / orientation / complexity;
+          and a detector sweep confirming every class up to a full FNO reads zero on pure noise. On
+          real models it flagged a linear regressor — fingerprint pointing at the geographic and
+          nonlinear features it structurally can't express, ~45% of held-out error recovered — while
+          clearing a strong gradient-boosting model. Packaged as an open-source Python library.
+        </p>
+
+        <div class="callout">
+          <div class="h">Why this is interpretability work — and where it goes next</div>
+          <p>
+            RLS is, at its core, a <b>probing method with the honesty machinery interpretability has
+            been missing</b>. The field's central worry about probes — that a probe "finding" a
+            feature may be reading its own capacity rather than the model's computation — is exactly
+            what the permutation null, out-of-sample estimation, and recoverability check are built to
+            neutralize, grounding the apparatus in usable information rather than raw accuracy. The
+            same procedure transfers directly to language models: applied to an LLM's next-token
+            residuals or its residual-stream activations, it asks whether a candidate direction
+            carries real, causally-recoverable signal or is an artifact — and localizes what the
+            model has failed to represent — a natural bridge to the
+            <b>mechanistic interpretability of large language models</b>.
+          </p>
+        </div>
+
+        <div class="tags" style="margin-top:16px">
+          <span class="tag">Probing / V-information</span><span class="tag">Permutation Tests</span>
+          <span class="tag">FNO Detector</span><span class="tag">Causal Recoverability</span>
+          <span class="tag">Pre-registered</span><span class="tag">Open-source</span>
+        </div>
+      </div>
+
+      <!-- PINO — GUARDED (unpublished) -->
+      <div class="card">
+        <div class="top">
+          <div>
+            <h3>Operator Learning for Forward &amp; Inverse PDEs</h3>
+            <div class="meta">Research Intern · Prof. Shashi Jain, IISc Bangalore · Jan 2026 – Present</div>
+          </div>
+          <span class="badge">🔒 Ongoing · details on request</span>
+        </div>
+        <p>
+          Building Fourier Neural Operator / PINO surrogates that learn family-wide solution
+          maps for parametric PDEs in place of per-instance classical solvers. Reproduced
+          standard operator-learning benchmarks — Burgers (12.9% relative L2 with a PDE loss vs.
+          23.4% for a data-only FNO) and Darcy flow (1.3% relative L2). The work extends to
+          forward operator surrogates, inverse coefficient recovery, and calibration problems
+          whose methods and quantitative results are part of ongoing unpublished research.
+        </p>
+        <div class="tags">
+          <span class="tag">FNO / PINO</span><span class="tag">PyTorch</span>
+          <span class="tag">Inverse Problems</span><span class="tag">Crank–Nicolson</span>
+          <span class="tag">Adam → L-BFGS</span>
+        </div>
+      </div>
+
+      <!-- QKD / quantum — GUARDED (paper under review). QST? -->
+      <div class="card">
+        <div class="top">
+          <div>
+            <h3>PINN-Based Error Reconciliation for Quantum Key Distribution</h3>
+            <div class="meta">Research Assistant · Prof. Kuntal Mukherjee, BIT Mesra · 2024</div>
+          </div>
+          <span class="badge">🔒 Under review</span>
+        </div>
+        <p>
+          Physics-informed neural networks that enforce quantum parity constraints directly in
+          the loss for error reconciliation in QKD systems, with syndrome-assisted recovery
+          under sparsity regularization and compressed-sensing recovery guarantees (RIP).
+          Manuscript under review at <i>Quantum Information Processing</i> (co-author).
+        </p>
+        <div class="tags">
+          <span class="tag">PINNs</span><span class="tag">QKD</span>
+          <span class="tag">Compressed Sensing</span><span class="tag">RIP</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================= PROJECTS ============================= -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="seclabel">03 — Projects</div>
+
+      <!-- BSM_PINN — OPEN -->
+      <div class="card">
+        <div class="top">
+          <div>
+            <h3>Option Pricing via Physics-Informed Neural Networks</h3>
+            <div class="meta">Black–Scholes–Merton solved with PINNs · deployed web app</div>
+          </div>
+          <span class="badge open">Open source</span>
+        </div>
+        <p>
+          Solved Black–Scholes–Merton PDEs with physics-informed neural networks and benchmarked
+          convergence against closed-form solutions to sub-1% relative error across the price–time
+          domain. Deployed as a FastAPI + Streamlit web app for open reproducibility.
+        </p>
+        <div class="tags">
+          <span class="tag">PINNs</span><span class="tag">PyTorch</span>
+          <span class="tag">FastAPI</span><span class="tag">Streamlit</span>
+        </div>
+        <div class="cardlinks">
+          <a href="https://github.com/gaganc3773/BSM_PINN" target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Fraud model — OPEN -->
+      <div class="card">
+        <div class="top">
+          <div>
+            <h3>Fraud Detection under Extreme Class Imbalance</h3>
+            <div class="meta">Deep networks on 6M+ transactions · &lt;0.2% positive rate</div>
+          </div>
+          <span class="badge open">Open source</span>
+        </div>
+        <p>
+          Trained deep networks on 6M+ transaction records under severe class imbalance using
+          focal loss and AUC-oriented objectives, reaching ROC-AUC ≈ 0.97 on held-out data, with
+          regularization and sampling strategies to preserve generalization.
+        </p>
+        <div class="tags">
+          <span class="tag">Deep Learning</span><span class="tag">Focal Loss</span>
+          <span class="tag">Imbalanced Data</span><span class="tag">PyTorch</span>
+        </div>
+        <div class="cardlinks">
+          <a href="https://github.com/gaganc3773/Fraud_Model" target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================= PUBLICATION ============================= -->
+  <section id="publication">
+    <div class="wrap">
+      <div class="seclabel">04 — Publication</div>
+      <div class="pub">
+        <div class="title">Quantum-Enhanced Key Sifting and PINN-Based Error Reconciliation in QKD</div>
+        <div class="venue muted">
+          S. Chakrabarti, <b>Gagan C</b>, K. Mukherjee · <i>Quantum Information Processing</i> — under review
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= SKILLS ============================= -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="seclabel">05 — Toolbox</div>
+      <div class="skills">
+        <div class="skillrow"><div class="k">Programming</div><div class="v">Python (fluent), C++, Java, Bash, Git, Linux</div></div>
+        <div class="skillrow"><div class="k">ML / Deep Learning</div><div class="v">Neural networks, Transformers, GNNs, PINNs, Operator Learning (FNO / PINO), training dynamics, optimization (SGD / Adam / L-BFGS), probing classifiers</div></div>
+        <div class="skillrow"><div class="k">Interpretability</div><div class="v">Probe design, usable (<i>V</i>-)information estimation, permutation-null calibration, causal recoverability tests, residual-structure analysis, ablation studies, activation diagnostics</div></div>
+        <div class="skillrow"><div class="k">Scientific Computing</div><div class="v">PDE-constrained learning, forward &amp; inverse problems, Monte Carlo methods, stochastic calculus / SDEs, finite-difference (Crank–Nicolson), spectral / FFT methods, numerical optimization</div></div>
+        <div class="skillrow"><div class="k">Statistics &amp; Inference</div><div class="v">Permutation / bootstrap testing, multiple-testing control (Westfall–Young FWER), cross-fitting, hypothesis testing, compressed sensing (RIP)</div></div>
+        <div class="skillrow"><div class="k">Computational Finance</div><div class="v">Black–Scholes–Merton, option pricing, local-volatility calibration, Gaussian random fields, portfolio &amp; risk modelling</div></div>
+        <div class="skillrow"><div class="k">Libraries</div><div class="v">PyTorch, NumPy, SciPy, Pandas, Matplotlib, scikit-learn, statsmodels, FastAPI, Streamlit</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= EDUCATION / MISC ============================= -->
+  <section id="education" class="edu">
+    <div class="wrap">
+      <div class="seclabel">06 — Education &amp; Recognition</div>
+
+      <div class="card">
+        <div class="top">
+          <div><h3>Integrated MSc — Physics (Honours &amp; Research)</h3>
+            <div class="meta">Birla Institute of Technology, Mesra · Minor: Mathematics &amp; Computing · CGPA 8.54 / 10</div>
+          </div>
+          <span class="when">2023 – 2028</span>
+        </div>
+        <p style="margin-bottom:0">
+          Relevant coursework: Linear Algebra, Probability Theory, Statistical Mechanics,
+          Computational Methods, Data Structures &amp; Algorithms, Measure Theory (self-study).
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="top">
+          <div><h3>KIAC Winter School on AI for Fintech</h3>
+            <div class="meta">Kotak–IISc AI–ML Centre, IISc Bangalore · selected as 1 of 40 nationwide</div>
+          </div>
+          <span class="when">Jan 2026</span>
+        </div>
+        <ul class="bullets" style="margin-bottom:0">
+          <li>Zero-knowledge proofs, multiparty computation, and federated learning with leading researchers.</li>
+          <li>Temporal graph neural networks, scalable ML systems, and mathematical finance.</li>
+          <li>BIT NISHAN Hackathon — Top 25 teams (INR 10,000); MSME Idea Hackathon — Sustainable Development.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= FOOTER / CONTACT ============================= -->
+  <footer id="contact">
+    <div class="wrap">
+      <div class="seclabel">07 — Contact</div>
+      <div class="row">
+        <div class="foot-links">
+          <a href="mailto:gaganc3773@gmail.com">gaganc3773@gmail.com</a>
+          <a href="https://github.com/gaganc3773" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/gagan-c-3ab75124b" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <div class="copy">© <span id="yr"></span> Gagan C</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ---------- Theme toggle (persists) ----------
+    (function(){
+      var root=document.documentElement, key="theme";
+      var saved=localStorage.getItem(key);
+      if(saved){root.setAttribute("data-theme",saved);}
+      document.getElementById("themeToggle").addEventListener("click",function(){
+        var cur=root.getAttribute("data-theme");
+        var isDark = cur ? cur==="dark"
+          : window.matchMedia("(prefers-color-scheme:dark)").matches;
+        var next=isDark?"light":"dark";
+        root.setAttribute("data-theme",next);
+        localStorage.setItem(key,next);
+      });
+      document.getElementById("yr").textContent=new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
