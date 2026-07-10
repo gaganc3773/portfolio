@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neural Quantum State Tomography — Gagan C</title>
+  <meta name="description" content="A physics-informed network that reconstructs quantum states in a single forward pass, physically valid by construction." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="wrap">
+      <a class="brand" href="index.html">Gagan&nbsp;C</a>
+      <span class="links">
+        <a href="work.html" class="active">Work</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <button class="theme-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark">◐</button>
+      </span>
+    </div>
+  </nav>
+
+  <div class="page-head">
+    <div class="wrap">
+      <a class="backlink" href="work.html">← All work</a>
+      <span class="badge reveal">🔒 Unpublished · details on request</span>
+      <h1 class="reveal" data-d="1">Neural Quantum State Tomography</h1>
+      <p class="sub reveal" data-d="2">
+        Reconstructing a quantum state's density matrix in a single forward pass — physically valid
+        by construction, and competitive with maximum-likelihood estimation in the low-data regime.
+      </p>
+      <div class="page-meta reveal" data-d="3">
+        <span class="tag">Quantum State Tomography</span><span class="tag">PINNs</span>
+        <span class="tag">Density Matrices</span><span class="tag">Physical Validity</span>
+        <span class="tag">Amortized Inference</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 900 260" role="img" aria-label="Measurement counts pass through a physics-informed network to produce a physically valid density matrix.">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+          </marker>
+        </defs>
+        <!-- measurement counts (bars) -->
+        <rect x="20" y="80" width="190" height="110" rx="12" fill="var(--surface)" stroke="var(--line)"/>
+        <g fill="var(--accent)" opacity="0.85">
+          <rect x="50" y="140" width="18" height="38"/><rect x="80" y="120" width="18" height="58"/>
+          <rect x="110" y="150" width="18" height="28"/><rect x="140" y="110" width="18" height="68"/>
+          <rect x="170" y="132" width="18" height="46"/>
+        </g>
+        <text x="115" y="70" text-anchor="middle" style="font:400 13px var(--mono);fill:var(--muted)">measurement counts</text>
+        <!-- network -->
+        <rect x="320" y="100" width="240" height="70" rx="12" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.6"/>
+        <text x="440" y="130" text-anchor="middle" style="font:600 15px var(--sans);fill:var(--text)">Physics-informed net</text>
+        <text x="440" y="151" text-anchor="middle" style="font:400 12px var(--mono);fill:var(--muted)">single forward pass</text>
+        <!-- density matrix + validity -->
+        <rect x="670" y="80" width="210" height="110" rx="12" fill="var(--surface)" stroke="var(--line)"/>
+        <circle cx="720" cy="135" r="26" fill="none" stroke="var(--accent)" stroke-width="1.4"/>
+        <line x1="720" y1="109" x2="720" y2="161" stroke="var(--accent)" stroke-width="1" opacity="0.5"/>
+        <ellipse cx="720" cy="135" rx="26" ry="9" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.5"/>
+        <circle cx="734" cy="124" r="3" fill="var(--accent)"/>
+        <text x="812" y="128" text-anchor="middle" style="font:600 14px var(--sans);fill:var(--text)">ρ</text>
+        <text x="812" y="147" text-anchor="middle" style="font:400 11px var(--mono);fill:var(--muted)">ρ ⪰ 0, Trρ = 1</text>
+        <text x="775" y="70" text-anchor="middle" style="font:400 13px var(--mono);fill:var(--muted)">valid by construction</text>
+        <!-- arrows -->
+        <line x1="212" y1="135" x2="316" y2="135" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+        <line x1="562" y1="135" x2="666" y2="135" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+      </svg>
+      <figcaption>The network emits a manifestly physical state — positive, unit-trace — so every output is a valid density matrix. Schematic only.</figcaption>
+    </figure>
+
+    <div data-tabs>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="overview">Overview</button>
+        <button class="tab-btn" data-tab="results">Results</button>
+        <button class="tab-btn" data-tab="approach">Approach</button>
+      </div>
+
+      <div class="tab-panel active" data-panel="overview">
+        <div class="prose">
+          <p>
+            Quantum state tomography infers a state's density matrix from measurement statistics.
+            The classical options each have a weakness: <b>linear inversion</b> is fast but returns
+            increasingly unphysical estimates as the system grows, and <b>maximum-likelihood
+            estimation</b> is accurate but re-runs a per-state optimization every time. A
+            physics-informed network instead emits a <b>guaranteed-physical</b> state in a single
+            forward pass, amortized across many states.
+          </p>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="results">
+        <div class="prose">
+          <ul>
+            <li><b>Physically valid at every system size</b>, where linear inversion becomes mostly unphysical as dimension grows.</li>
+            <li>Competitive with — and at small system sizes better than — per-sample MLE in the <b>data-scarce, low-measurement regime</b>, while running orders of magnitude faster.</li>
+            <li>Stays <b>high-fidelity on hard pure and entangled states</b> (e.g. GHZ), the regime where a learned prior helps most.</li>
+          </ul>
+          <div class="note">
+            Entangled-state results are simulated (no quantum hardware). Exact figures, the training
+            design, and full comparisons are unpublished — available on request.
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="approach">
+        <div class="prose">
+          <p>
+            The reconstruction is parameterized so that the output is a manifestly physical density
+            matrix by construction, and the network is trained in an amortized way across states and
+            measurement budgets. A purpose-built, physics-aware objective concentrates accuracy
+            exactly where reconstruction is hardest.
+          </p>
+          <div class="note">The specifics of the objective and architecture are unpublished.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer id="contact">
+    <div class="wrap">
+      <div class="row">
+        <div class="foot-links">
+          <a class="ul-anim" href="work.html">← All work</a>
+          <a class="ul-anim" href="mailto:gaganc3773@gmail.com">Email</a>
+          <a class="ul-anim" href="https://github.com/gaganc3773" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="copy">© <span id="yr"></span> Gagan C</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

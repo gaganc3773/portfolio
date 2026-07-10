@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Residual Learnability Score — Gagan C</title>
+  <meta name="description" content="A calibrated, detector-relative test for whether a model has left recoverable structure in its residuals." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="wrap">
+      <a class="brand" href="index.html">Gagan&nbsp;C</a>
+      <span class="links">
+        <a href="work.html" class="active">Work</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <button class="theme-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark">◐</button>
+      </span>
+    </div>
+  </nav>
+
+  <div class="page-head">
+    <div class="wrap">
+      <a class="backlink" href="work.html">← All work</a>
+      <span class="badge eyebrow reveal">◆ Interpretability</span>
+      <h1 class="reveal" data-d="1">Residual Learnability Score</h1>
+      <p class="sub reveal" data-d="2">
+        A calibrated, interpretable test for a question a loss value can't answer: has a model
+        captured all the learnable signal — or is it still leaving structure on the table?
+      </p>
+      <div class="page-meta reveal" data-d="3">
+        <span class="tag">Probing / V-information</span>
+        <span class="tag">Permutation Tests</span>
+        <span class="tag">FNO Detector</span>
+        <span class="tag">Causal Recoverability</span>
+        <span class="tag">Pre-registered</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ===== IP-safe concept diagram (illustration, not method) ===== -->
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 900 340" role="img" aria-label="Flow: a trained model produces residuals; a detector fits them; the score yields a verdict, a fingerprint, and a recoverability estimate.">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+          </marker>
+        </defs>
+        <!-- pipeline nodes -->
+        <g style="font-family:var(--sans)">
+          <!-- Model -->
+          <rect x="12" y="138" width="150" height="60" rx="12" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="87" y="164" text-anchor="middle" style="font:600 15px var(--sans);fill:var(--text)">Trained model</text>
+          <text x="87" y="183" text-anchor="middle" style="font:400 12px var(--mono);fill:var(--muted)">M</text>
+          <!-- Residuals -->
+          <rect x="212" y="138" width="160" height="60" rx="12" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+          <text x="292" y="164" text-anchor="middle" style="font:600 15px var(--sans);fill:var(--text)">Residuals</text>
+          <text x="292" y="183" text-anchor="middle" style="font:400 12px var(--mono);fill:var(--muted)">r = y − ŷ</text>
+          <!-- Detector -->
+          <rect x="422" y="138" width="150" height="60" rx="12" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+          <text x="497" y="164" text-anchor="middle" style="font:600 15px var(--sans);fill:var(--text)">Detector</text>
+          <text x="497" y="183" text-anchor="middle" style="font:400 12px var(--mono);fill:var(--muted)">FNO, out-of-sample</text>
+
+          <!-- arrows across pipeline -->
+          <line x1="164" y1="168" x2="208" y2="168" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+          <line x1="374" y1="168" x2="418" y2="168" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+
+          <!-- permutation null loop -->
+          <path d="M497,198 C497,250 360,250 360,205" fill="none" stroke="var(--muted)" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+          <text x="430" y="268" text-anchor="middle" style="font:400 12px var(--mono);fill:var(--faint)">permutation null (shuffle) → calibration</text>
+
+          <!-- three outputs -->
+          <line x1="572" y1="168" x2="640" y2="86" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+          <line x1="572" y1="168" x2="640" y2="168" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+          <line x1="572" y1="168" x2="640" y2="250" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+
+          <rect x="644" y="58" width="244" height="56" rx="10" fill="var(--accent-soft)" stroke="var(--line)"/>
+          <text x="660" y="82" style="font:600 14px var(--sans);fill:var(--accent)">Verdict</text>
+          <text x="660" y="101" style="font:400 12px var(--sans);fill:var(--muted)">calibrated p-value</text>
+
+          <rect x="644" y="140" width="244" height="56" rx="10" fill="var(--accent-soft)" stroke="var(--line)"/>
+          <text x="660" y="164" style="font:600 14px var(--sans);fill:var(--accent)">Fingerprint</text>
+          <text x="660" y="183" style="font:400 12px var(--sans);fill:var(--muted)">scale · orientation · complexity</text>
+
+          <rect x="644" y="222" width="244" height="56" rx="10" fill="var(--accent-soft)" stroke="var(--line)"/>
+          <text x="660" y="246" style="font:600 14px var(--sans);fill:var(--accent)">Recoverability</text>
+          <text x="660" y="265" style="font:400 12px var(--sans);fill:var(--muted)">held-out error reduction</text>
+        </g>
+      </svg>
+      <figcaption>Conceptual overview — a schematic of the pipeline, not the method itself.</figcaption>
+    </figure>
+
+    <!-- ===== sub-tabs ===== -->
+    <div data-tabs>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="overview">Overview</button>
+        <button class="tab-btn" data-tab="results">Results</button>
+        <button class="tab-btn" data-tab="approach">Approach</button>
+      </div>
+
+      <!-- Overview -->
+      <div class="tab-panel active" data-panel="overview">
+        <div class="prose">
+          <p>
+            Validation loss tells you how <i>wrong</i> a model is, not whether it is as
+            <i>right as it can be</i>. Two models with identical held-out error can be in completely
+            different situations — one has extracted all the learnable signal and leaves only
+            irreducible noise; the other is systematically missing a periodicity, an interaction, or
+            a region of input space. An adequate model leaves residuals that behave like white noise;
+            a deficient one leaves residuals that are still predictable.
+          </p>
+          <p>
+            RLS makes that concrete: it measures the fraction of the residual field's variance a
+            detector can recover out-of-sample — a <b>detector-relative</b> quantity that ties the
+            score directly to the theory of usable (<i>V</i>-)information. It produces three coupled
+            outputs:
+          </p>
+        </div>
+        <div class="keypoints">
+          <div class="kp"><div class="n">01 · VERDICT</div><div class="h">Calibrated p-value</div>
+            <div class="d">A permutation null rebuilds the "no-structure" distribution; a detector's overfitting bias cancels, so the test stays calibrated even with an arbitrarily powerful detector.</div></div>
+          <div class="kp"><div class="n">02 · FINGERPRINT</div><div class="h">What was missed</div>
+            <div class="d">Fitting residuals in the frequency domain lets the statistic double as a description of the missed structure — its scale, orientation, and complexity.</div></div>
+          <div class="kp"><div class="n">03 · RECOVERABILITY</div><div class="h">Proven effect size</div>
+            <div class="d">Build the implied correction and measure the held-out error drop; when it matches the in-sample score, the missed structure is proven real.</div></div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="tab-panel" data-panel="results">
+        <div class="prose">
+          <h3>One-sided by design</h3>
+          <p>
+            A significant score certifies a model is <i>improvable</i>; a null result certifies
+            nothing — it may mean the model is adequate, or that the detector was too weak. Reporting
+            the detector alongside the score is non-negotiable, and cross-fitting makes memorized
+            noise score zero.
+          </p>
+          <h3>Validated, pre-registered</h3>
+          <p>
+            Across six pre-registered studies: near-perfect noise/signal separation (ROC-AUC 0.998)
+            at the nominal false-positive rate; the in-sample score predicting held-out error
+            reduction almost one-to-one (R² 0.97–0.99, including PDE residual fields with the FNO
+            detector); exact recovery of injected scale / orientation / complexity; and a detector
+            sweep confirming every class — up to a full FNO — reads zero on pure noise.
+          </p>
+          <h3>On real models</h3>
+          <p>
+            It flagged a deliberately weak linear regressor — its fingerprint pointing at the
+            geographic and nonlinear features a linear model structurally cannot express, with a
+            large share of held-out error recovered — while clearing a strong gradient-boosting
+            model as having no detectable structure left. On real time series it named the exact
+            seasonal period a misspecified forecaster had ignored.
+          </p>
+        </div>
+      </div>
+
+      <!-- Approach -->
+      <div class="tab-panel" data-panel="approach">
+        <div class="prose">
+          <p>
+            The central move is to treat the residuals not as a bag of numbers but as a
+            <b>field</b> over the problem's domain. "Structure" is then any departure from white
+            noise, and it can be viewed four equivalent ways — as predictability, as low rank, as a
+            best-fitting template, or as spectral concentration — each a different practical handle
+            on the same object.
+          </p>
+          <p>
+            The detector of choice is a <b>Fourier Neural Operator</b>, chosen less for raw power
+            than for legibility: because it fits through learnable weights in the frequency domain,
+            the fit doubles as a readable fingerprint of what was missed. Calibration comes from the
+            permutation machinery, not the raw number — which is what lets the procedure use an
+            arbitrarily powerful detector without losing its error control.
+          </p>
+          <div class="note">
+            Method internals and the full experimental program are part of an unpublished write-up —
+            available on request. Packaged as an open-source Python library.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- interpretability bridge -->
+    <div class="callout reveal">
+      <div class="h">Why this is interpretability work</div>
+      <p>
+        RLS is, at its core, a probing method with the honesty machinery interpretability has been
+        missing. The field's central worry about probes — that a probe "finding" a feature may be
+        reading its own capacity rather than the model's computation — is exactly what the
+        permutation null, out-of-sample estimation, and recoverability check are built to neutralize.
+        The same procedure transfers directly to language models: applied to an LLM's next-token
+        residuals or its residual-stream activations, it asks whether a candidate direction carries
+        real, causally-recoverable signal or is an artifact — a natural bridge to the mechanistic
+        interpretability of large language models.
+      </p>
+    </div>
+
+  </div>
+
+  <footer id="contact">
+    <div class="wrap">
+      <div class="row">
+        <div class="foot-links">
+          <a class="ul-anim" href="work.html">← All work</a>
+          <a class="ul-anim" href="mailto:gaganc3773@gmail.com">Email</a>
+          <a class="ul-anim" href="https://github.com/gaganc3773" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="copy">© <span id="yr"></span> Gagan C</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

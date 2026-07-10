@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Applied &amp; Open-source — Gagan C</title>
+  <meta name="description" content="Physics-informed option pricing and deep fraud detection under extreme class imbalance." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="wrap">
+      <a class="brand" href="index.html">Gagan&nbsp;C</a>
+      <span class="links">
+        <a href="work.html" class="active">Work</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <button class="theme-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark">◐</button>
+      </span>
+    </div>
+  </nav>
+
+  <div class="page-head">
+    <div class="wrap">
+      <a class="backlink" href="work.html">← All work</a>
+      <span class="badge open reveal">Open source</span>
+      <h1 class="reveal" data-d="1">Applied &amp; Open-source</h1>
+      <p class="sub reveal" data-d="2">
+        Two shipped projects with public code — a physics-informed pricing engine and a
+        deep model for fraud detection under severe class imbalance.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="summary reveal" style="cursor:default">
+      <div class="top">
+        <div><h3>Option Pricing via Physics-Informed Neural Networks</h3></div>
+        <span class="badge open">Web app</span>
+      </div>
+      <p class="oneline">
+        Solved Black–Scholes–Merton PDEs with PINNs, benchmarked against closed-form solutions to
+        sub-1% relative error across the price–time domain, and deployed as a FastAPI + Streamlit web
+        app for open reproducibility.
+      </p>
+      <div class="foot">
+        <div class="tags">
+          <span class="tag">PINNs</span><span class="tag">PyTorch</span>
+          <span class="tag">FastAPI</span><span class="tag">Streamlit</span>
+        </div>
+        <a class="ul-anim more" href="https://github.com/gaganc3773/BSM_PINN" target="_blank" rel="noopener">GitHub&nbsp;↗</a>
+      </div>
+    </div>
+
+    <div class="summary reveal" data-d="1" style="cursor:default">
+      <div class="top">
+        <div><h3>Fraud Detection under Extreme Class Imbalance</h3></div>
+        <span class="badge open">Open source</span>
+      </div>
+      <p class="oneline">
+        Trained deep networks on 6M+ transaction records under a &lt;0.2% positive rate using focal
+        loss and AUC-oriented objectives, reaching ROC-AUC ≈ 0.97 on held-out data, with
+        regularization and sampling strategies to preserve generalization.
+      </p>
+      <div class="foot">
+        <div class="tags">
+          <span class="tag">Deep Learning</span><span class="tag">Focal Loss</span>
+          <span class="tag">Imbalanced Data</span><span class="tag">PyTorch</span>
+        </div>
+        <a class="ul-anim more" href="https://github.com/gaganc3773/Fraud_Model" target="_blank" rel="noopener">GitHub&nbsp;↗</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer id="contact">
+    <div class="wrap">
+      <div class="row">
+        <div class="foot-links">
+          <a class="ul-anim" href="work.html">← All work</a>
+          <a class="ul-anim" href="mailto:gaganc3773@gmail.com">Email</a>
+          <a class="ul-anim" href="https://github.com/gaganc3773" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="copy">© <span id="yr"></span> Gagan C</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
