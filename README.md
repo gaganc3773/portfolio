@@ -1,23 +1,30 @@
-# Gagan C — Personal Website
+# Personal Website — Gagan C
 
-A single, self-contained static site (`index.html`, no build step, no dependencies).
+Source for my personal website: **https://gaganc3773.github.io/portfolio/**
 
-## Edit
-All content lives in `index.html`. Search for the section comments — `ABOUT`, `RESEARCH`,
-`PROJECTS`, etc. Lines marked `EDIT:` are the ones most worth personalizing (especially the
-**About / "why AI safety"** paragraph).
+A single, self-contained static page (`index.html`) — plain HTML, CSS, and a few lines of
+JavaScript, with no build step and no dependencies. Responsive and light/dark theme aware.
 
-## Preview locally
-Just open `index.html` in a browser. Or serve it:
+## Run locally
+Open `index.html` directly in a browser, or serve it:
+
 ```
 python -m http.server 8000
 # then visit http://localhost:8000
 ```
 
-## Deploy (GitHub Pages)
-1. Create a repo (e.g. `gaganc3773.github.io` for a root domain, or any repo name).
-2. Push these files.
-3. Repo → Settings → Pages → Source: `main` branch, `/root`.
-4. Live at `https://gaganc3773.github.io/` (or `/<repo-name>/`).
+## Structure
+Everything is in `index.html`, split into commented sections — `HERO`, `ABOUT`, `RESEARCH`,
+`PROJECTS`, `PUBLICATION`, `SKILLS`, `EDUCATION`, `CONTACT`. Styling lives in a single
+`<style>` block at the top; the theme toggle is a small script at the bottom.
 
-Alternatively, drag this folder onto https://app.netlify.com/drop for an instant URL.
+## Deploy
+Hosted on GitHub Pages from the `main` branch. To publish changes, commit and push:
+
+```
+git add -A
+git commit -m "update"
+git push
+```
+
+GitHub Pages rebuilds automatically within a minute or two.
