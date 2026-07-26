@@ -157,6 +157,39 @@
             seasonal period a misspecified forecaster had ignored.
           </p>
         </div>
+
+        <!-- selected result figures -->
+        <div class="figset">
+          <figure class="figblock">
+            <div class="lbl">Calibration &amp; power</div>
+            <div class="fig-plate"><img src="assets/rls/E1_roc.png" alt="Detection power rising with injected signal, and the score distribution under the null versus signal." loading="lazy" /></div>
+            <figcaption><b>The test is trustworthy.</b> Left — detection climbs from the nominal false-positive rate to full power as the injected signal grows. Right — under the null the score sits near zero and separates almost perfectly from the signal regime (ROC-AUC 0.998).</figcaption>
+          </figure>
+
+          <figure class="figblock">
+            <div class="lbl">The fingerprint</div>
+            <div class="fig-plate"><img src="assets/rls/E5_fingerprint.png" alt="The score, restricted along band, orientation, and rank, recovering the injected structure." loading="lazy" /></div>
+            <figcaption><b>It says what was missed.</b> Restricted along three axes, the score recovers exactly what was planted — its scale (which frequency band), its orientation, and its complexity (how many components).</figcaption>
+          </figure>
+
+          <figure class="figblock">
+            <div class="lbl">Recoverability</div>
+            <div class="fig-plate"><img src="assets/rls/E2_field.png" alt="In-sample score versus held-out error reduction, points hugging the diagonal." loading="lazy" /></div>
+            <figcaption><b>The number is a real effect size.</b> In-sample score versus the held-out error reduction a corrector actually delivers — the two agree almost one-to-one (slope ≈ 0.98, R² ≈ 0.97), here on partial-differential-equation residual fields.</figcaption>
+          </figure>
+
+          <figure class="figblock">
+            <div class="lbl">On real data</div>
+            <div class="fig-plate"><img src="assets/rls/E3_realdata.png" alt="A residual spectrum with the missed seasonal period, and detected structure versus real forecast improvement." loading="lazy" /></div>
+            <figcaption><b>It works without ground truth.</b> Left — a misspecified forecaster's residual spectrum, with the missed seasonal period surfaced automatically. Right — how much structure is detected tracks the real held-out forecast improvement.</figcaption>
+          </figure>
+
+          <figure class="figblock">
+            <div class="lbl">Detector sweep</div>
+            <div class="fig-plate"><img src="assets/rls/E4_hierarchy.png" alt="The score across detector classes: rising with capacity on structure, staying near zero on noise." loading="lazy" /></div>
+            <figcaption><b>Calibration survives capacity.</b> Across detector classes up to a full neural operator, the score rises with capacity on genuine structure — yet every class, including the most flexible, reads near zero on pure noise.</figcaption>
+          </figure>
+        </div>
       </div>
 
       <!-- Approach -->
